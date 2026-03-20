@@ -39,3 +39,50 @@
 
 # debug information files
 *.dwo
+
+# --- JUCE / IDE Specifics ---
+/Builds/
+/JuceLibraryCode/
+.jucer
+*.xcworkspace
+*.xcodeproj
+*.sln
+*.vcxproj
+*.user
+*.filters
+
+# --- Compiled Binaries ---
+*.exe
+*.dll
+*.so
+*.dylib
+*.vst3
+*.component
+*.app/
+*.a
+*.lib
+
+# --- Build Directories ---
+bin/
+obj/
+Build/
+DerivedData/
+
+# --- OS Specifics ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- IDE / Editor Specifics ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.vs/
+out/
+
+# --- Temporary/Backup Files ---
+*~
+*.bak
+*.tmp
+*.log
