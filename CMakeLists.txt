@@ -1,49 +1,56 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.15)
+
+# 1. Define Project Name
 project(ScalatronX VERSION 1.0.0)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# 2. Link JUCE (Ensure JUCE is in a subdirectory or installed)
+# If JUCE is not in the project root, change 'JUCE' to the correct path
+add_subdirectory(JUCE) 
 
-# ── JUCE (add as git submodule: git submodule add https://github.com/juce-framework/JUCE.git JUCE)
-add_subdirectory(JUCE)
-
+# 3. Create the Plugin Target
 juce_add_plugin(ScalatronX
-    VERSION                     1.0.0
-    COMPANY_NAME                "ScalatronLabs"
-    PLUGIN_MANUFACTURER_CODE    Sclb
-    PLUGIN_CODE                 Sclx
-    FORMATS                     VST3
-    PRODUCT_NAME                "Scalatron-X"
-    IS_SYNTH                    TRUE
-    NEEDS_MIDI_INPUT            TRUE
-    NEEDS_MIDI_OUTPUT           FALSE
-    IS_MIDI_EFFECT              FALSE
-    EDITOR_WANTS_KEYBOARD_FOCUS FALSE
-    COPY_PLUGIN_AFTER_BUILD     TRUE
-)
+    COMPANY_NAME "Motorola-Lab-Recreations"
+    IS_SYNTH TRUE
+    NEEDS_MIDI_INPUT TRUE
+    NEEDS_MIDI_OUTPUT FALSE
+    IS_MIDI_EFFECT FALSE
+    EDITOR_WANTS_KEYBOARD_FOCUS TRUE
+    COPY_PLUGIN_AFTER_BUILD TRUE
+    PLUGIN_MANUFACTURER_CODE "Moto"
+    PLUGIN_CODE "ScaX"
+    FORMATS VST3 AU Standalone
+    PRODUCT_NAME "Scalatron-X")
 
+# 4. Include Source Files
 target_sources(ScalatronX PRIVATE
-    Source/ScalatronXAudioProcessor.cpp
-    Source/ScalatronXAudioProcessorEditor.cpp
-)
+    Source/PluginProcessor.cpp
+    Source/PluginProcessor.h
+    Source/PluginEditor.cpp
+    Source/PluginEditor.h
+    Source/ScalatronCore.h)
 
-target_include_directories(ScalatronX PRIVATE Source)
-
-target_compile_definitions(ScalatronX PUBLIC
+# 5. Link Libraries and Define Settings
+target_compile_definitions(ScalatronX
+    PUBLIC
     JUCE_WEB_BROWSER=0
     JUCE_USE_CURL=0
-    JUCE_VST3_CAN_REPLACE_VST2=0
-    JUCE_DISPLAY_SPLASH_SCREEN=0
-)
+    JUCE_VST3_CAN_REPLACE_VST2=0)
 
 target_link_libraries(ScalatronX
     PRIVATE
-        juce::juce_audio_utils
-        juce::juce_audio_processors
-        juce::juce_dsp
-        juce::juce_gui_basics
-    PUBLIC
-        juce::juce_recommended_config_flags
-        juce::juce_recommended_lto_flags
-        juce::juce_recommended_warning_flags
-)
+    juce::juce_audio_utils
+    juce::juce_audio_processors
+    juce::juce_audio_formats
+    juce::juce_audio_devices
+    juce::juce_audio_basics
+    juce::juce_graphics
+    juce::juce_data_structures
+    juce::juce_events
+    juce::juce_core)
+
+# 6. Optimization for Production Build
+if(MSVC)
+    target_compile_options(ScalatronX PRIVATE /W4)
+else()
+    target_compile_options(ScalatronX PRIVATE -Wall -Wextra -Wpedantic)
+endif()
